@@ -1,16 +1,18 @@
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.sparql.vocabulary.FOAF;
+import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.VCARD;
 
 import javax.annotation.processing.Filer;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Natasha Stojanova
@@ -112,6 +114,51 @@ public class Homework01 {
         }
     }
 
+    public static class T5 {
+        void task5_1() throws FileNotFoundException {
+            Model model = ModelFactory.createDefaultModel();
+            InputStream str = new FileInputStream("C:\\Users\\natas\\Desktop\\FCSE\\WP\\WBS\\src\\main\\resources\\med.ttl");
+            model.read(str, "TTL");
+
+            ResIterator iterator = model.listResourcesWithProperty(RDFS.label);
+
+            List<String> med = new ArrayList<>();
+
+            while (iterator.hasNext())
+                med.add(iterator.nextResource().getProperty(RDFS.label).getLiteral().getString());
+
+            ArrayList<String> medSorted = (ArrayList<String>) med.stream().distinct().collect(Collectors.toList());
+            Collections.sort(medSorted);
+
+            System.out.println("\n\n\n\n=====================================\n\n\n\n");
+            System.out.println("Printing ALL medicines (SORTED & DISTINCT)");
+            System.out.println("\n\n\n\n=====================================");
+            medSorted.forEach(System.out::println);
+            System.out.println("=====================================\n\n\n\n");
+
+        }
+
+        void task5_2() throws FileNotFoundException {
+            Model model = ModelFactory.createDefaultModel();
+            InputStream str = new FileInputStream("C:\\Users\\natas\\Desktop\\FCSE\\WP\\WBS\\src\\main\\resources\\med.ttl");
+            model.read(str, "TTL");
+
+            StmtIterator iterator = model.listStatements();
+
+            System.out.println("\n\n\n\n=====================================\n\n\n\n");
+            System.out.println("TASK 5.23 Printing PARACETAMOL - relations and values");
+            System.out.println("\n\n\n\n=====================================");
+
+            while (iterator.hasNext()) {
+                Statement statement = iterator.nextStatement();
+                if (statement.getObject().isLiteral() && statement.getLiteral().getString().equals("CHOLIPAM"))
+                    System.out.println(statement);
+            }
+
+
+        }
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
 
         //T1 t1=new T1();
@@ -120,8 +167,8 @@ public class Homework01 {
         //T3 t3=new T3();
         //t3.doStuff();
 
-        T4 t4=new T4();
-        t4.doStuff();
+        // T4 t4=new T4();
+        //t4.doStuff();
 
     }
 }
